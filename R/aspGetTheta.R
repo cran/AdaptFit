@@ -3,7 +3,7 @@
 # Estimates the spline coefficients 
 # of the variance of random effects
 
-# Last changed: 16 JUN 2006
+# Last changed: 26 APR 2007
 
 
 "aspGetTheta" <-  function (theta.info, niter.var, family, weights,spar.method) 
@@ -28,26 +28,29 @@
   sigma.theta.d[ind == TRUE] <- 0
   sigma.theta.d <- rep(sigma.theta.d, kc)
   D <- diag(sigma.theta.d)
-  ZbV <- Zb
   U <- Y
-
+  resid <- t(U - Xb %*% beta)
+  
 #redefine matrices in case of non-normal response
 
   if (family != "gaussian")
     {
     mu.hat <- theta.info$asp.info$fit$fitted
     if (family == "poisson") 
-      V <- c(1/mu.hat)
+      V <- c(mu.hat)
     if (family == "binomial") 
-      V <- c(1/(mu.hat * (1 - mu.hat) * weights))
+      V <- c(mu.hat * (1 - mu.hat) * weights)
     eta <- link(mu.hat, family)
     V12 <- sqrt(V)
-    U <- eta + V * (Y - mu.hat)
-    ZbV <- t(t(Zb) * V12)
+    U <- c(eta + (Y - mu.hat)/V)
+    Zb <- t(t(Zb) * V12)
+    resid <- t((U - c(Xb %*% beta))*V12)
+    Xb<- t(t(Xb)*V12)
     sigma.eps <- 1
   }
-  ZVZ <- t(ZbV) %*% ZbV
-  resid <- t(U - Xb %*% beta)
+  ZVZ <- t(Zb)%*%Zb
+  XVX <- t(Xb)%*%Xb
+  ZVX <- t(Zb)%*%Xb
 
 #iterate for the spline coeficients of the variance of random effects
 
@@ -56,12 +59,13 @@
     ridge <- chol(ZVZ + diag(Sigma.b.inverse * sigma.eps/sigma.b))
     Ridge.inv <- backsolve(ridge, diag(rep(1, nrow(ridge))))
     ridge.inv <- Ridge.inv %*% t(Ridge.inv)
-    zz <- ZbV %*% ridge.inv
+    zz <- Zb %*% ridge.inv
     alpha <- c(resid %*% zz)
-    ZZ <- t(ZbV) %*% zz
+    ZZ <- t(Zb) %*% zz
     if (spar.method=="REML")
       {
-        PP <- (Sigma.b.inverse*sigma.eps/sigma.b)*(t(zz)%*%Xb%*%solve(t(Xb)%*%Xb-t(Xb)%*%zz%*%t(ZbV)%*%Xb)%*%t(Xb)%*%zz)
+        zzXb <- t(zz)%*%Xb
+        PP <- (Sigma.b.inverse*sigma.eps/sigma.b)*(zzXb%*%solve(XVX-t(zzXb)%*%ZVX)%*%t(zzXb))
         ZZ <- ZZ-PP
      }
     wdf <- diag(ZZ)

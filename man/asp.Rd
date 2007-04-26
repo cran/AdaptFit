@@ -14,7 +14,7 @@ asp(form,adap=TRUE,random=NULL,group=NULL,family="gaussian",
   \item{form}{a formula describing the model to be fit. 
           Note, that an intercept is always included, whether 
           given in the formula or not.}
- \item{adap}{TRUE if an adaptive fit should be performed. Otherwise the fit is identical to that of function "spm"}
+ \item{adap}{TRUE (default) if an adaptive fit should be performed, otherwise the fit is identical to that of function "spm".}
   \item{random}{"random=~1" specifies inclusion of a random intercept
          according to the groups specified by the "group" argument.}
   \item{group}{a vector of labels for specifying groups.}
@@ -27,39 +27,38 @@ asp(form,adap=TRUE,random=NULL,group=NULL,family="gaussian",
   \item{omit.missing}{a logical value indicating whether
                       fields with missing values are to be
                       omitted.}
-  \item{niter}{maximum number of iterations for the mean estimation, default is 20}
-  \item{niter.var}{maximum number of iterations for the variance of random effects estimation, default is 50}
-\item{weights}{to use only with grouped binary data}
+  \item{niter}{maximum number of iterations for the mean estimation, default is 20.}
+  \item{niter.var}{maximum number of iterations for the variance of random effects estimation, default is 50.}
+\item{weights}{to use only with grouped binary data.}
 \item{correlation}{correlation structure of the response; see documentation to
-"nlme"}
+"nlme".}
 }
 \value{
   A list object of class \code{"spm"} containing the fitted model.
   The components are:
-\item{fitted}{fitted values}
-\item{coef.mean}{estimated mean coefficients}
-\item{design.matrices}{design matrices both for knots und subknots}
-\item{x}{x values}
-\item{knots}{knots}
-\item{y.cov}{estimated covariance matrix of the response}
-\item{random.var}{estimated covariance matrix of random effects}
-\item{subknots}{subknots}
-\item{coef.random}{estimated spline coefficients of the covariance matrix of random effects}
-\item{var.random.var}{estimated variance of spline coefficients of covariance matrix of random effects}
+\item{fitted}{fitted values.}
+\item{coef.mean}{estimated mean coefficients.}
+\item{design.matrices}{design matrices both for knots und subknots.}
+\item{x}{x values.}
+\item{knots}{knots.}
+\item{y.cov}{estimated covariance matrix of the response.}
+\item{random.var}{estimated covariance matrix of random effects.}
+\item{subknots}{subknots.}
+\item{coef.random}{estimated spline coefficients of the covariance matrix of random effects.}
+\item{var.random.var}{estimated variance of spline coefficients of covariance matrix of random effects.}
   \item{fit}{mimics fit object of lme() for
   family="gaussian" and glmmPQL() for family="binomial" or
-  family="poisson"}
-  \item{info}{information about the inputs}
+  family="poisson".}
+  \item{info}{information about the inputs.}
   \item{aux}{auxiliary information such as variability
-   estimates}
+   estimates.}
 }
 \details{See the SemiPar Users' Manual for details
 and examples.
 }
-\references{
-	 Krivobokova, T., Crainiceanu, C.M. and Kauermann, G. (2005)\cr
-     \emph{Fast Adaptive Penalized Splines} working paper.\cr
-     \url{http://www.wiwi.uni-bielefeld.de/~statistics/research/research.html}
+\references{Krivobokova, T., Crainiceanu, C.M. and Kauermann, G. (2007)\cr
+     Fast Adaptive Penalized Splines.\emph{ Journal of Computational and
+     Graphical Statistics.}
 
        Ganguli, B. and Wand, M.P. (2005)\cr
      \emph{SemiPar 1.0 Users' Manual}.\cr
@@ -72,7 +71,7 @@ Ruppert, D., Wand, M.P. and Carroll, R.J. (2003)\cr
  }
 
 \author{T.Krivobokova 
-\email{tkrivobokova@wiwi.uni-bielefeld.de}
+\email{Tatyana.Krivobokova@econ.kuleuven.be}
 
 }
 \seealso{
@@ -92,7 +91,7 @@ y <- mu+0.5*rnorm(1000)
 y.fit <- asp(y~f(x))
 plot(y.fit)
 
-## one more scatterplot with specified knots and subknots
+## one more scatterplot smoothing with specified knots and subknots
 
 x <- 1:400/400
 mu <- sqrt(x*(1-x))*sin((2*pi*(1+2^((9-4*6)/5)))/(x+2^((9-4*6)/5)))
@@ -137,11 +136,7 @@ x <- 1:1000/1000
 mu <- exp(-400*(x-0.6)^2)+5*exp(-500*(x-0.75)^2)/3+2*exp(-500*(x-0.9)^2)
 y4 <- rbinom(1000,5,1/(1+exp(-mu)))
 nn <- rep(5,1000)
-y4.fit <- asp(cbind(y4,nn-y4)~f(x),family="binomial")
-
-# same as
-
-y4.fit <- asp(y4/nn~f(x),family="binomial",weights=nn)
+y4.fit <- asp(cbind(y4,nn-y4)~f(x),family="binomial")   ### same as ###  y4.fit <- asp(y4/nn~f(x),family="binomial",weights=nn)
 plot(y4.fit) #plot of systematic component
 
 

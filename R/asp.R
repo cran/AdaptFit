@@ -23,7 +23,7 @@
   asp.info <- NULL
   model.matrices <- list(Xb = Xb, Zb = Zb, Wb = Wb)
 
-#define weights for binomial data
+#define weights for grouped binomial data
 
   if ((family == "binomial") & (is.null(weights))) 
     weights = rep(1, nrow(Xb))

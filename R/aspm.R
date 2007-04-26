@@ -133,11 +133,11 @@
         if(is.null(offs))
         lme.fit <- glmmPQL(y ~ -1 + X.Declan, random = list(group.vec.Handan = pdIdent(~-1 + 
                                                               Z.Jaida)), data = data.fr, family = family, 
-                           weights = weights, niter = 20,correlation=correlation)
+                           weights = weights, niter = 30,correlation=correlation)
         else
             lme.fit <- glmmPQL(y ~ -1 + offset(offs)+X.Declan, random = list(group.vec.Handan = pdIdent(~-1 + 
                                                               Z.Jaida)), data = data.fr, family = family, 
-                           weights = weights, niter = 20,correlation=correlation)
+                           weights = weights, niter = 30,correlation=correlation)
           
       }
     }
@@ -153,12 +153,12 @@
         lme.fit <- glmmPQL(y ~ -1 + X.Declan, random = list(group.vec.Handan = pdBlocked(Z.block, 
                                                               pdClass = rep("pdIdent", length(Z.block)))), 
                            data = data.fr, family = family, weights = weights, 
-                           niter = 20,correlation=correlation)
+                           niter = 30,correlation=correlation)
         else
                   lme.fit <- glmmPQL(y ~ -1 + offset(offs)+X.Declan, random = list(group.vec.Handan = pdBlocked(Z.block, 
                                                               pdClass = rep("pdIdent", length(Z.block)))), 
                            data = data.fr, family = family, weights = weights, 
-                           niter = 20,correlation=correlation)
+                           niter = 30,correlation=correlation)
 
       }
     }
