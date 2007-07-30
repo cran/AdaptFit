@@ -3,7 +3,7 @@
 # Estimates the spline coefficients 
 # of the variance of random effects
 
-# Last changed: 26 APR 2007
+# Last changed: 30 JUL 2007
 
 
 "aspGetTheta" <-  function (theta.info, niter.var, family, weights,spar.method) 
@@ -16,6 +16,10 @@
   Wc <- theta.info$model.matrices$Wc
   kc <- theta.info$model.matrices$kc
   kb <- theta.info$model.matrices$kb
+  ZVZ <- theta.info$model.matrices$ZVZ
+  XVX <- theta.info$model.matrices$XVX
+  ZVX <- theta.info$model.matrices$ZVX
+
   sigma.theta <- theta.info$sigma.theta
   theta <- theta.info$theta
   sigma.eps <- theta.info$asp.info$fit$sigma^2
@@ -48,9 +52,6 @@
     Xb<- t(t(Xb)*V12)
     sigma.eps <- 1
   }
-  ZVZ <- t(Zb)%*%Zb
-  XVX <- t(Xb)%*%Xb
-  ZVX <- t(Zb)%*%Xb
 
 #iterate for the spline coeficients of the variance of random effects
 
@@ -71,11 +72,11 @@
     wdf <- diag(ZZ)
     vdf <- diag(diag(ZZ %*% ZZ))
     wvw <- t(Wc) %*% vdf %*% Wc/2
-    u <- wvw %*% theta + t(Wc) %*% (Sigma.b.inverse * (alpha^2)/sigma.b - wdf)/2
+    score <- diag(D)*theta-t(Wc) %*% (Sigma.b.inverse * (alpha^2)/sigma.b - wdf)/2
     ridge.theta <- chol(wvw + D)
     Ridge.theta.inv <-  backsolve(ridge.theta, diag(rep(1, nrow(ridge.theta))))
     fisher <-  Ridge.theta.inv%*%t(Ridge.theta.inv)
-    theta1 <- fisher %*% u
+    theta1 <- theta-fisher %*% score
     epsilon.theta <- sum((theta - theta1)^2)/sum(theta^2)
     theta <- theta1
     if (epsilon.theta <= 1e-06) 

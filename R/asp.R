@@ -2,11 +2,11 @@
 
 # For fitting adaptive semiparametric regression models.
 
-# Last changed: 19 JUN 2006
+# Last changed: 30 JUL 2007
 
 "asp" <-   function (form, adap = TRUE, random = NULL, group = NULL, family = "gaussian", 
-            spar.method = "REML", omit.missing = NULL, niter = 20, niter.var = 50, 
-            weights = NULL,correlation=NULL) 
+            spar.method = "REML", omit.missing = NULL, niter = 20, niter.var = 50,tol=1e-6, returnFit=FALSE, 
+            weights = NULL,correlation=NULL,control=NULL) 
 {
   require("SemiPar")
 
@@ -34,7 +34,7 @@
 
 #get non-adaptive fit 
 
-  aspm.obj <- aspm(spm.info, random, group, family, spar.method, omit.missing,correlation=correlation,weights=weights)
+  aspm.obj <- aspm(spm.info, random, group, family, spar.method, omit.missing,correlation=correlation,weights=weights,control=control)
 
   if (family != "gaussian") 
     aspm.obj$fit$fitted <- NULL
@@ -120,8 +120,25 @@
       knots.theta <- c(knots.theta, list(design.info.theta$spm.info$krige$knots[[1]]))
       detach(theta.frame)
     }
+
+
+#store the model matrices
+    
     Wc <- bdiag(Wc)
-    model.matrices <- list(Xb = Xb, Zb = Zb, Wc = Wc, kb = kb, kc = kc)
+  if (family != "gaussian")
+    {
+      if (family == "poisson") 
+      V <- c(fit)
+    if (family == "binomial") 
+      V <- c(fit * (1 - fit) * weights)
+    V12 <- sqrt(V)
+    Zb <- t(t(Zb) * V12)
+    }
+    ZVZ <- t(Zb)%*%Zb
+    XVX <- t(Xb)%*%Xb
+    ZVX <- t(Zb)%*%Xb
+    
+    model.matrices <- list(Xb = Xb, Zb = Zb, Wc = Wc, ZVZ=ZVZ, XVX=XVX, ZVX=ZVX, kb = kb, kc = kc)
 
 #iterate for the next estimate of the variance of random effects
 
@@ -139,10 +156,10 @@
       theta1 <- c(theta)
       theta1[!theta.ind] <- 0
       ran.var <- exp(c(Wc %*% theta1))
-
+      
 	#obtain remaining estimate with the estimated variance of random effects
 
-      aspm.obj <- aspm(spm.info, random, group, family, spar.method, omit.missing, Si.b = ran.var, weights = weights,correlation=correlation)
+      aspm.obj <- aspm(spm.info, random, group, family, spar.method, omit.missing, Si.b = ran.var, weights = weights,correlation=correlation,control=control)
       if (family != "gaussian") 
         aspm.obj$fit$fitted <- NULL
       fit1 <- aspm.obj$fit$fitted
@@ -151,10 +168,13 @@
 
 	#exit if epsilon is small
 
-      if (epsilon.fit <= 1e-06) 
+      if (epsilon.fit <= tol) 
         break
-      if (i == niter) 
-        stop("Iteration limit reached without convergence")
+      if (i == niter)
+        
+          if (returnFit==TRUE) {cat("Warning: Iteration limit reached without convergence");break}
+          else
+            stop ("Iteration limit reached without convergence")
     }
 
 #extract objects for the output related to the adaptive fit

@@ -3,14 +3,15 @@
 # Modified version of spm function to take 
 # estimated variance of random effects into account
 
-# Last changed: 16 JUN 2006
+# Last changed: 30 JUL 2007
 
 
 "aspm" <-
   function (spm.info, random = NULL, group = NULL, family = "gaussian", 
-            spar.method = "REML", omit.missing = NULL, Si.b = NULL, weights = NULL,correlation=NULL) 
+            spar.method = "REML", omit.missing = NULL, Si.b = NULL, weights = NULL,correlation=NULL,control=NULL) 
 {
   require("nlme")
+  
   random.info <- NULL
   if (!is.null(random)) 
     random.info <- random.read(random, group)
@@ -125,7 +126,7 @@
                                                                         paste(re.block.inds[[i]], collapse = ","), ")]-1"))
     if (length(re.block.inds) == 1) {
       if (family == "gaussian")
-           lme.fit <- lme(y ~ -1 + X.Declan, random = pdIdent(~-1 + Z.Jaida), data = data.fr, method = spar.method,correlation=correlation)
+           lme.fit <- lme(y ~ -1 + X.Declan, random = pdIdent(~-1 + Z.Jaida), data = data.fr, method = spar.method,correlation=correlation,control=control)
       
       if (family != "gaussian") {
         require("MASS")
@@ -133,11 +134,11 @@
         if(is.null(offs))
         lme.fit <- glmmPQL(y ~ -1 + X.Declan, random = list(group.vec.Handan = pdIdent(~-1 + 
                                                               Z.Jaida)), data = data.fr, family = family, 
-                           weights = weights, niter = 30,correlation=correlation)
+                           weights = weights, niter = 30,correlation=correlation,control=control)
         else
             lme.fit <- glmmPQL(y ~ -1 + offset(offs)+X.Declan, random = list(group.vec.Handan = pdIdent(~-1 + 
                                                               Z.Jaida)), data = data.fr, family = family, 
-                           weights = weights, niter = 30,correlation=correlation)
+                           weights = weights, niter = 30,correlation=correlation,control=control)
           
       }
     }
@@ -145,7 +146,7 @@
       if (family == "gaussian") 
         lme.fit <- lme(y ~ -1 + X.Declan, random = list(group.vec.Handan = pdBlocked(Z.block, 
                                                           pdClass = rep("pdIdent", length(Z.block)))), 
-                       data = data.fr, method = spar.method,correlation=correlation)
+                       data = data.fr, method = spar.method,correlation=correlation,control=control)
       if (family != "gaussian") {
         require("MASS")
         offs <- spm.info$off.set
@@ -153,12 +154,12 @@
         lme.fit <- glmmPQL(y ~ -1 + X.Declan, random = list(group.vec.Handan = pdBlocked(Z.block, 
                                                               pdClass = rep("pdIdent", length(Z.block)))), 
                            data = data.fr, family = family, weights = weights, 
-                           niter = 30,correlation=correlation)
+                           niter = 30,correlation=correlation,control=control)
         else
                   lme.fit <- glmmPQL(y ~ -1 + offset(offs)+X.Declan, random = list(group.vec.Handan = pdBlocked(Z.block, 
                                                               pdClass = rep("pdIdent", length(Z.block)))), 
                            data = data.fr, family = family, weights = weights, 
-                           niter = 30,correlation=correlation)
+                           niter = 30,correlation=correlation,control=control)
 
       }
     }

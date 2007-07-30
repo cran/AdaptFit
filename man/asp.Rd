@@ -4,11 +4,12 @@
 \description{
 \code{asp} fits semiparametric
 regression models using the mixed model
-representation of penalized splines with spatially adaptive penalties. Based on function "spm" of SemiPar-package.
+representation of penalized splines with spatially adaptive
+penalties, based on the "spm" function of the SemiPar-package.
 }
 \usage{
 asp(form,adap=TRUE,random=NULL,group=NULL,family="gaussian",
-                spar.method="REML",omit.missing=NULL,niter=20,niter.var=50,weights=NULL,correlation=NULL)
+                spar.method="REML",omit.missing=NULL,niter=20,niter.var=50,tol=1e-06,returnFit=FALSE,weights=NULL,correlation=NULL,control=NULL)
 }
 \arguments{
   \item{form}{a formula describing the model to be fit. 
@@ -20,18 +21,27 @@ asp(form,adap=TRUE,random=NULL,group=NULL,family="gaussian",
   \item{group}{a vector of labels for specifying groups.}
   \item{family}{for specification of the type of likelihood
                 model assumed in the fitting.
-                May be "gaussian","binomial" or "poisson"}
+                May be "gaussian","binomial" or "poisson".}
   \item{spar.method}{method for automatic smoothing parameter
                      selection. May be "REML" (restricted maximum
                      likelihood) or "ML" (maximum likelihood).}
   \item{omit.missing}{a logical value indicating whether
-                      fields with missing values are to be
+                fields with missing values are to be
                       omitted.}
-  \item{niter}{maximum number of iterations for the mean estimation, default is 20.}
-  \item{niter.var}{maximum number of iterations for the variance of random effects estimation, default is 50.}
+  \item{niter}{a maximum number of iterations for the mean estimation, default is 20.}
+  \item{niter.var}{a maximum number of iterations for the variance of
+    random effects estimation, default is 50.}
+  \item{tol}{ tolerance for the convergence criterion. Default is 1e-6.     }
+  \item{returnFit}{a logical value indicating whether the fitted object
+          should be returned when the maximum number of iterations is
+          reached without convergence of the algorithm. Default is
+          FALSE.}
 \item{weights}{to use only with grouped binary data.}
 \item{correlation}{correlation structure of the response; see documentation to
-"nlme".}
+  "nlme".}
+\item{control}{see lmeControl in the documentation to
+  "nlme".}
+
 }
 \value{
   A list object of class \code{"spm"} containing the fitted model.
@@ -42,10 +52,12 @@ asp(form,adap=TRUE,random=NULL,group=NULL,family="gaussian",
 \item{x}{x values.}
 \item{knots}{knots.}
 \item{y.cov}{estimated covariance matrix of the response.}
-\item{random.var}{estimated covariance matrix of random effects.}
+\item{random.var}{estimated covariance matrix of the random effects.}
 \item{subknots}{subknots.}
-\item{coef.random}{estimated spline coefficients of the covariance matrix of random effects.}
-\item{var.random.var}{estimated variance of spline coefficients of covariance matrix of random effects.}
+\item{coef.random}{estimated spline coefficients of the covariance
+  matrix of the random effects.}
+\item{var.random.var}{estimated variance of the spline coefficients of
+  the covariance matrix of the random effects.}
   \item{fit}{mimics fit object of lme() for
   family="gaussian" and glmmPQL() for family="binomial" or
   family="poisson".}
@@ -70,7 +82,7 @@ Ruppert, D., Wand, M.P. and Carroll, R.J. (2003)\cr
    
  }
 
-\author{T.Krivobokova 
+\author{Tatyana Krivobokova 
 \email{Tatyana.Krivobokova@econ.kuleuven.be}
 
 }
@@ -126,7 +138,7 @@ y3 <- mu3+diff(range(mu3))*rnorm(300)/4
 
 
 #for the specified knots and subknots use
-	# kn <- default.knots.2D(x1,x2,12^2) # !!!interactive function!!!
+	# kn <- default.knots.2D(x1,x2,12^2) # !!! interactive function !!!
 	# kn.var <- default.knots.2D(kn[,1],kn[,2],5^2)
 	# y3.fit <- asp(y3~f(x1,x2,knots=kn,var.knot=kn.var))
 
@@ -136,7 +148,8 @@ x <- 1:1000/1000
 mu <- exp(-400*(x-0.6)^2)+5*exp(-500*(x-0.75)^2)/3+2*exp(-500*(x-0.9)^2)
 y4 <- rbinom(1000,5,1/(1+exp(-mu)))
 nn <- rep(5,1000)
-y4.fit <- asp(cbind(y4,nn-y4)~f(x),family="binomial")   ### same as ###  y4.fit <- asp(y4/nn~f(x),family="binomial",weights=nn)
+y4.fit <- asp(cbind(y4,nn-y4)~f(x),family="binomial")
+### same as ###  y4.fit <- asp(y4/nn~f(x),family="binomial",weights=nn)
 plot(y4.fit) #plot of systematic component
 
 
