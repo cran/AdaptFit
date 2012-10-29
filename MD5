@@ -1,0 +1,16 @@
+485c59b86ad9a734d5944467f5dad000 *DESCRIPTION
+345105e9eb255b9322055873e0b71758 *NAMESPACE
+b77af38e5b21a953e154b1a5d9c706b2 *R/acomputeCTRinvC.R
+3c969cb6acff6329f6b34d97656bac2e *R/airls.ridge.R
+d6aeb03fc695744dbf1f234cc84c15c4 *R/almeAux.R
+49222963f516deca312754dfcc4bef51 *R/asp.R
+ae466eba185a865bebc6d7e20e3a6b37 *R/aspGetTheta.R
+627f1aa205aec13cbb3bef45084957dc *R/aspm.R
+b758a5dc99d1fe8386ccfb67eba6b176 *R/aspmFormRead.R
+c04ea7a8714f2886de19d45d68c1abd3 *R/aspmKrigeRead.R
+f7eba44592f1fea3f7369a97b24644ab *R/aspmPenRead.R
+27cb8154ac32ee09c48a091a7c851b0a *R/bdiag.R
+9ec6cce91bd4e4c67ed31fa5f57ca516 *data/absent.RData
+338cfc492ef8bb28670ee5ce4634ecd9 *man/AdaptFit-internal.Rd
+e31841ed855029459f43f8e2cec949b1 *man/absent.Rd
+b868a2a1b6385e3d9c66f60eb4604c85 *man/asp.Rd

@@ -24,7 +24,7 @@ Kauermann, G and Ortlieb, R. (2004). Temporal pattern in number of staff on sick
 }
 \references{
 Krivobokova, T., Crainiceanu, C.M. and Kauermann, G. (2007)\cr
-     {Fast Adaptive Penalized Splines} \cr
+     Fast Adaptive Penalized Splines \cr
      \emph{Journal of Computational and Graphical Statistics}.
 
 }

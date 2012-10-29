@@ -68,9 +68,9 @@ asp(form,adap=TRUE,random=NULL,group=NULL,family="gaussian",
 \details{See the SemiPar Users' Manual for details
 and examples.
 }
-\references{Krivobokova, T., Crainiceanu, C.M. and Kauermann, G. (2007)\cr
+\references{Krivobokova, T., Crainiceanu, C.M. and Kauermann, G. (2008)\cr
      Fast Adaptive Penalized Splines.\emph{ Journal of Computational and
-     Graphical Statistics.}
+     Graphical Statistics. 17(1) 1-20.}
 
        Ganguli, B. and Wand, M.P. (2005)\cr
      \emph{SemiPar 1.0 Users' Manual}.\cr
@@ -83,7 +83,7 @@ Ruppert, D., Wand, M.P. and Carroll, R.J. (2003)\cr
  }
 
 \author{Tatyana Krivobokova 
-\email{Tatyana.Krivobokova@econ.kuleuven.be}
+\email{tkrivob at gwdg.de}
 
 }
 \seealso{
@@ -167,5 +167,5 @@ plot(y5.fit)
 #
 #     www.maths.unsw.edu.au/~wand/papers.html 
 }
-\keyword{nonlinear} \keyword{models} \keyword{smooth} \keyword{regression}\keyword{\adaptive}
+\keyword{nonlinear} \keyword{models} \keyword{smooth} \keyword{regression}\keyword{adaptive}
 
